@@ -1,1 +1,41 @@
+import numpy as np
+import pandas as pd
+import scipy as sp
+from scipy import stats
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+
+#Read the excel file
+IQdata= pd.read_excel('C:/Users/patta/Downloads/IQ_data.xlsx')
+print(IQdata)
+#assign dependent variable and independent variable
+y=IQdata['IQ']
+x=IQdata['Test 1']
+print(x)
+print(y)
+#plot scatter plot to see movement
+plot=plt.scatter(x,y)
+plt.axis([0,150,0,200])
+plt.title('Scatter plot of IQ test score VS Test score')
+plt.ylabel('IQ')
+plt.xlabel('Test 1')
+plt.grid()
+print(plot)
+
+#write regression model to predict the score 
+x1= sm.add_constant(x)
+regression= sm.OLS(y,x1).fit()
+print(regression.summary())
+#testing prediction
+predictscore= 46+(0.76*68)
+print('Prediction of IQ test score when test 1 score of 84=',predictscore)
+#create best fit line
+slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+def fitline(b):
+    return intercept + slope * b
+line = fitline(x)
+plt.scatter(x,y)
+plt.plot(x,line)
+plt.show()
 
