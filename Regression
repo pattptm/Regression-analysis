@@ -1,0 +1,35 @@
+import numpy as np
+import pandas as pd
+import scipy as sp
+from scipy import stats
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+
+#Read the excel file
+housedata= pd.read_excel('C:/Users/patta/Downloads/Housing.xlsx')
+print(housedata)
+
+#Assign house price to variable
+y=housedata['House Price'] #dependent variable
+x=housedata['House Size (sq.ft.)'] #independent variable
+print(x)
+print(y)
+
+#Scatter plot to see relationship
+plot=plt.scatter(x,y)
+plt.title('Scatter plot of House price vs House size')
+plt.axis([0,2500,0,1500000])
+plt.ylabel('House Price')
+plt.xlabel('House Size (sq.ft.)')
+print(plot)
+
+#R square will be indicator for good and bad regression model <10% =bad >=30%= Good
+#alpha=constant number, beta=slope of regression line
+#Start creating regression model by assign constant
+x1= sm.add_constant(x)
+regression= sm.OLS(y,x1).fit()
+print('R square=67.8% meaning that independent variable(House size)', 
+      'can decribe dependent variable of house price''\n''constant= starting point of regression line''\n'
+      'coefficient of House size=beta or slope of regression line''\n',regression.summary())
+
