@@ -1,0 +1,57 @@
+import numpy as np
+import pandas as pd
+import scipy as sp
+from scipy import stats
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import yfinance as yf
+
+
+#Read the excel file
+gdp= pd.read_excel('C:/Users/patta/Downloads/GDP.xls')['GDP']
+gs= pd.read_excel('C:/Users/patta/Downloads/GS.xls')['Adj Close']
+print('GS',gs)
+print('GDP',gdp)
+#check number of data
+numgs=len(gs)
+print(numgs)
+numgdp=len(gdp)
+print(numgdp)
+#calculate log return
+logreturngs=np.log(gs/gs.shift(1))
+logreturngdp=np.log(gdp/gdp.shift(1))
+print('Log return GS',logreturngs)
+print('Log return GDP',logreturngdp)
+
+#define independent and dependent variable
+y=logreturngs[np.logical_not(np.isnan(logreturngs))]
+x=logreturngdp[np.logical_not(np.isnan(logreturngdp))]
+
+#plot scatter plot to see movement
+plot=plt.scatter(x,y)
+plt.axis([0,0.5,-0.5,0.5])
+plt.title('Scatter plot of GS logreturn VS GDP logreturn')
+plt.ylabel('GS')
+plt.xlabel('GDP')
+plt.grid()
+print(plot)
+
+#write regression model to predict the score 
+x1= sm.add_constant(x)
+#fit method will find the fit estimation technique in to model
+regression= sm.OLS(y,x1).fit()
+print(regression.summary())
+
+#create best fit line
+slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+def fitline(b):
+    return intercept + slope * b
+line = fitline(x)
+plt.scatter(x,y)
+plt.plot(x,line)
+plt.show()
+
+#Analysis: R square is meaning that the Test 1 score can explain the IQ score only 0.7%
+#testing prediction
+A=0.0207+0.7235*(0.0360)
+print('Testing prediction of GS log return 2010',A)
